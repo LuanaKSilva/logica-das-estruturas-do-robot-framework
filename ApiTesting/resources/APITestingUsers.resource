@@ -62,3 +62,23 @@ Conferir os dados retornados
     Dictionary Should Contain Item    dictionary=${RESP_CONSULT}    key=password         value=1234
     Dictionary Should Contain Item    dictionary=${RESP_CONSULT}    key=administrador    value=true
     Dictionary Should Contain Item    dictionary=${RESP_CONSULT}    key=_id              value=${ID_USERS}
+
+Realizar Login com o usuário
+    ${body}  Create Dictionary
+    ...      email=${EMAIL_TEST}
+    ...      password=1234  
+    
+    Criar Sessão na ServeRest
+
+    ${response}  POST On Session
+    ...          alias=ServeRest
+    ...          url=/login
+    ...          json=${body}
+    ...          expected_status=200
+
+    Set Test Variable    ${RESPONSE}    ${response.json()} 
+
+Conferir se o Login ocorreu com sucesso
+    Log  ${RESPONSE}
+    Dictionary Should Contain Item  dictionary=${RESPONSE}  key=message  value=Login realizado com sucesso
+    Dictionary Should Contain Key   dictionary=${RESPONSE}  key=authorization
